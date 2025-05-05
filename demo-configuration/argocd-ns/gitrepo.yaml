@@ -8,7 +8,7 @@ metadata:
   namespace: argocd
 spec:
   github:
-    name: argocon-gitops-promoter-hydrate-demo
+    name: gitops-promoter-hydrate-demo
     owner: balaji-singh
   scmProviderRef:
     name: scmprovider-sample
