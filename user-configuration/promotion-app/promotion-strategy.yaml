@@ -16,6 +16,3 @@ spec:
     - key: hcap
   gitRepositoryRef:
     name: argocon-demo
-  proposedCommitStatuses:
-    - key: yamllint
-    - key: hcap
