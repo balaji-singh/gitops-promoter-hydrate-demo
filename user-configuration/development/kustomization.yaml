@@ -3,8 +3,16 @@ kind: Kustomization
 
 namespace: development
 resources:
-  - ../base
+  - https://github.com/argoproj/rollouts-demo//examples/canary
   - namespace.yaml
 
 patches:
   - path: rollout.yaml
+
+images:
+- name: argoproj/rollouts-demo:blue
+  newTag: green
+
+commonAnnotations:
+  environment: development
+  version: "v1.0.1"
