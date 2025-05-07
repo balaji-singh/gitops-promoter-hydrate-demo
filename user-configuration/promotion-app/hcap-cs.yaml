@@ -10,7 +10,7 @@ metadata:
 spec:
   description: HCAP check for production
   gitRepositoryRef:
-    name: argocon-demo
+    name: hydrator-demo
   name: production/hcap
   sha: ""
   url: https://example.com

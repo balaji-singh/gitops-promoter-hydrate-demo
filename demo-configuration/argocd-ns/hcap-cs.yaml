@@ -10,7 +10,7 @@ metadata:
 spec:
   description: HCAP check for production
   gitRepositoryRef:
-    name: argocon-demo
+    name: hydrator-demo
   name: production/hcap
   phase: success
   sha: e2248bf82581b0bc5cfb17f5e62502cc8a78c8ca

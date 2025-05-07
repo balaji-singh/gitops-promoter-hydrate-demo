@@ -2,7 +2,7 @@ apiVersion: promoter.argoproj.io/v1alpha1
 kind: PromotionStrategy
 metadata:
   annotations:
-  name: argocon-demo
+  name: hydrator-demo
   namespace: default
 spec:
   activeCommitStatuses:
@@ -15,4 +15,4 @@ spec:
     proposedCommitStatuses:
     - key: hcap
   gitRepositoryRef:
-    name: argocon-demo
+    name: hydrator-demo

@@ -4,7 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/name: promoter
     app.kubernetes.io/managed-by: kustomize
-  name: argocon-demo
+  name: hydrator-demo
   namespace: default
 spec:
   github:
