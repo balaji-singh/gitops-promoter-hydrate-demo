@@ -3,91 +3,79 @@ kind: Namespace
 metadata:
   annotations:
     argocd.argoproj.io/tracking-id: development:/Namespace:/development
-    environment: development
-    version: v1.0.1
   name: development
 ---
 apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    argocd.argoproj.io/tracking-id: development:/Service:development/canary-demo
-    environment: development
-    version: v1.0.1
-  name: canary-demo
-  namespace: development
-spec:
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http
-  selector:
-    app: canary-demo
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    argocd.argoproj.io/tracking-id: development:/Service:development/canary-demo-preview
-    environment: development
-    version: v1.0.1
-  name: canary-demo-preview
-  namespace: development
-spec:
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http
-  selector:
-    app: canary-demo
----
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
-metadata:
-  annotations:
-    argocd.argoproj.io/tracking-id: development:argoproj.io/Rollout:development/canary-demo
-    environment: development
-    version: v1.0.1
+    argocd.argoproj.io/tracking-id: development:/Service:development/web-app-service
   labels:
-    environment: development
-  name: canary-demo
+    app.kubernetes.io/name: simple-web-app
+  name: web-app-service
   namespace: development
 spec:
-  replicas: 1
-  revisionHistoryLimit: 1
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: web-app
+    app.kubernetes.io/name: simple-web-app
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: development:apps/Deployment:development/web-app
+  labels:
+    app.kubernetes.io/name: simple-web-app
+  name: web-app
+  namespace: development
+spec:
+  replicas: 2
   selector:
     matchLabels:
-      app: canary-demo
-  strategy:
-    canary:
-      canaryService: canary-demo-preview
-      steps:
-        - setWeight: 20
-        - pause:
-            duration: 5
-        - setWeight: 80
-        - pause:
-            duration: 5
+      app: web-app
+      app.kubernetes.io/name: simple-web-app
   template:
     metadata:
-      annotations:
-        environment: development
-        version: v1.0.1
       labels:
-        app: canary-demo
-        environment: development
+        app: web-app
+        app.kubernetes.io/name: simple-web-app
     spec:
       containers:
-        - image: argoproj/rollouts-demo:green
-          imagePullPolicy: Always
-          name: canary-demo
+        - image: nginx:stable
+          name: web-app
           ports:
-            - containerPort: 8080
-              name: http
-              protocol: TCP
+            - containerPort: 80
           resources:
+            limits:
+              cpu: 250m
+              memory: 128Mi
             requests:
-              cpu: 5m
-              memory: 32Mi
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: development:networking.k8s.io/Ingress:development/web-app-ingress
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app.kubernetes.io/name: simple-web-app
+  name: web-app-ingress
+  namespace: development
+spec:
+  rules:
+    - host: app.example.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: web-app-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
