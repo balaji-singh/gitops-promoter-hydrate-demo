@@ -9,7 +9,6 @@ spec:
   - key: argocd-health
   environments:
   - branch: environments/development
-    autoMerge: false
     sourceReferenceBranch: environments/development-next
   - branch: environments/staging
     sourceReferenceBranch: environments/staging-next
