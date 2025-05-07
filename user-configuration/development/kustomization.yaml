@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: development
 resources:
-  - ./base
+  - ../base
   - namespace.yaml
 
 patches:
