@@ -9,80 +9,73 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    argocd.argoproj.io/tracking-id: e2e-staging:/Service:e2e-staging/canary-demo
-    version: v1.0.137
-  name: canary-demo
-  namespace: e2e-staging
-spec:
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http
-  selector:
-    app: canary-demo
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    argocd.argoproj.io/tracking-id: e2e-staging:/Service:e2e-staging/canary-demo-preview
-    version: v1.0.137
-  name: canary-demo-preview
-  namespace: e2e-staging
-spec:
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http
-  selector:
-    app: canary-demo
----
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
-metadata:
-  annotations:
-    argocd.argoproj.io/tracking-id: e2e-staging:argoproj.io/Rollout:e2e-staging/canary-demo
-    version: v1.0.137
+    argocd.argoproj.io/tracking-id: e2e-staging:/Service:e2e-staging/web-app-service
   labels:
-    db-schema: v1.4
-    environment: staging
-  name: canary-demo
+    app.kubernetes.io/name: simple-web-app
+  name: web-app-service
   namespace: e2e-staging
 spec:
-  replicas: 3
-  revisionHistoryLimit: 1
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: web-app
+    app.kubernetes.io/name: simple-web-app
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: e2e-staging:apps/Deployment:e2e-staging/web-app
+  labels:
+    app.kubernetes.io/name: simple-web-app
+  name: web-app
+  namespace: e2e-staging
+spec:
+  replicas: 2
   selector:
     matchLabels:
-      app: canary-demo
-  strategy:
-    canary:
-      canaryService: canary-demo-preview
-      steps:
-        - setWeight: 20
-        - pause:
-            duration: 5
-        - setWeight: 80
-        - pause:
-            duration: 5
+      app: web-app
+      app.kubernetes.io/name: simple-web-app
   template:
     metadata:
-      annotations:
-        version: v1.0.137
       labels:
-        app: canary-demo
-        environment: staging
+        app: web-app
+        app.kubernetes.io/name: simple-web-app
     spec:
       containers:
-        - image: argoproj/rollouts-demo:green
-          imagePullPolicy: Always
-          name: canary-demo
+        - image: nginx:stable
+          name: web-app
           ports:
-            - containerPort: 8080
-              name: http
-              protocol: TCP
+            - containerPort: 80
           resources:
+            limits:
+              cpu: 250m
+              memory: 128Mi
             requests:
-              cpu: 5m
-              memory: 32Mi
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: e2e-staging:networking.k8s.io/Ingress:e2e-staging/web-app-ingress
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app.kubernetes.io/name: simple-web-app
+  name: web-app-ingress
+  namespace: e2e-staging
+spec:
+  rules:
+    - host: app.example.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: web-app-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
