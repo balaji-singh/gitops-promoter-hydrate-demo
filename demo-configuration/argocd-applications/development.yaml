@@ -7,6 +7,7 @@ metadata:
     app: demo
 spec:
   destination:
+    namespace: development
     server: https://kubernetes.default.svc
   project: default
   sourceHydrator:
@@ -20,4 +21,6 @@ spec:
       path: .
       targetBranch: environments/development
   syncPolicy:
-    automated: {}
+    automated:
+      prune: true
+      selfHeal: true
