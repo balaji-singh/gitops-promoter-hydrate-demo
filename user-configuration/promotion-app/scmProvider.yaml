@@ -2,10 +2,10 @@ apiVersion: promoter.argoproj.io/v1alpha1
 kind: ScmProvider
 metadata:
   name: scmprovider-sample
-  namespace: default
+  namespace: argocd
 spec:
   github:
     appID: 865488
     installationID: 49029877
   secretRef:
-    name: my-auth
+    name: gitops-promoter
