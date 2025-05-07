@@ -8,4 +8,4 @@ spec:
     name: hydrator-demo
   applicationSelector:
     matchLabels:
-      app: web-app
+      app: demo

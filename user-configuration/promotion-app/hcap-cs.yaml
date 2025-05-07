@@ -14,3 +14,4 @@ spec:
   name: production/hcap
   sha: ""
   url: https://example.com
+  phase: pending
