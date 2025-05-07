@@ -1,6 +1,6 @@
 {
   "repoURL": "https://github.com/balaji-singh/gitops-promoter-hydrate-demo.git",
-  "drySha": "c3627630e2e69d66c657a764be1fa894de5abd2a",
+  "drySha": "8a0d3b492d84578ac4554b434d3e082a90a11570",
   "commands": [
     "kustomize build ./user-configuration/production/us-west-1"
   ]
