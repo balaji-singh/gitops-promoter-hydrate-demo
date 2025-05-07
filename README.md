@@ -7,6 +7,6 @@ To hydrate the manifests in this repository, run the following commands:
 
 git clone https://github.com/balaji-singh/gitops-promoter-hydrate-demo.git
 # cd into the cloned directory
-git checkout 899c659e796a4f7ec48eee4b5049a9d5a7e2a981
+git checkout eb7ad1242542a1693307a635a12002a71951d286
 kustomize build ./user-configuration/development
 ```

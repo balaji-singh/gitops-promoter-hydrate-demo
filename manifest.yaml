@@ -3,8 +3,6 @@ kind: Namespace
 metadata:
   annotations:
     argocd.argoproj.io/tracking-id: development:/Namespace:/development
-    environment: development
-    version: v1.0.1
   name: development
 ---
 apiVersion: v1
@@ -12,8 +10,7 @@ kind: Service
 metadata:
   annotations:
     argocd.argoproj.io/tracking-id: development:/Service:development/canary-demo
-    environment: development
-    version: v1.0.1
+    version: v1.0.137
   name: canary-demo
   namespace: development
 spec:
@@ -30,8 +27,7 @@ kind: Service
 metadata:
   annotations:
     argocd.argoproj.io/tracking-id: development:/Service:development/canary-demo-preview
-    environment: development
-    version: v1.0.1
+    version: v1.0.137
   name: canary-demo-preview
   namespace: development
 spec:
@@ -48,8 +44,7 @@ kind: Rollout
 metadata:
   annotations:
     argocd.argoproj.io/tracking-id: development:argoproj.io/Rollout:development/canary-demo
-    environment: development
-    version: v1.0.1
+    version: v1.0.137
   labels:
     environment: development
   name: canary-demo
@@ -65,18 +60,15 @@ spec:
       canaryService: canary-demo-preview
       steps:
         - setWeight: 20
-        - pause: {}
-        - setWeight: 40
         - pause:
-            duration: 10
-        - setWeight: 60
-        - pause:
-            duration: 10
+            duration: 5
         - setWeight: 80
         - pause:
-            duration: 10
+            duration: 5
   template:
     metadata:
+      annotations:
+        version: v1.0.137
       labels:
         app: canary-demo
         environment: development
@@ -93,53 +85,3 @@ spec:
             requests:
               cpu: 5m
               memory: 32Mi
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    argocd.argoproj.io/tracking-id: development:networking.k8s.io/Ingress:development/canary-demo
-    environment: development
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/app-root: /
-    nginx.ingress.kubernetes.io/proxy-body-size: 100m
-    version: v1.0.1
-  name: canary-demo
-  namespace: development
-spec:
-  rules:
-    - host: canary.dev.argoproj.io
-      http:
-        paths:
-          - backend:
-              service:
-                name: canary-demo
-                port:
-                  name: http
-            path: /
-            pathType: Prefix
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    argocd.argoproj.io/tracking-id: development:networking.k8s.io/Ingress:development/canary-demo-preview
-    environment: development
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/app-root: /
-    nginx.ingress.kubernetes.io/proxy-body-size: 100m
-    version: v1.0.1
-  name: canary-demo-preview
-  namespace: development
-spec:
-  rules:
-    - host: canary-preview.dev.argoproj.io
-      http:
-        paths:
-          - backend:
-              service:
-                name: canary-demo-preview
-                port:
-                  name: http
-            path: /
-            pathType: Prefix
