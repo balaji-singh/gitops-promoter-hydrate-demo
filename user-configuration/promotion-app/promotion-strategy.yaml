@@ -9,7 +9,7 @@ spec:
   - key: argocd-health
   environments:
   - branch: environments/development
-    autoMerge: true
+    autoMerge: false
   - branch: environments/staging
   - branch: environments/production
     proposedCommitStatuses:
