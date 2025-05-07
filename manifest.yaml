@@ -11,7 +11,7 @@ metadata:
   annotations:
     argocd.argoproj.io/tracking-id: development:/Service:development/web-app-service
   labels:
-    app.kubernetes.io/name: simple-web-app
+    app.kubernetes.io/name: web-app
   name: web-app-service
   namespace: development
 spec:
@@ -20,7 +20,7 @@ spec:
       targetPort: 80
   selector:
     app: web-app
-    app.kubernetes.io/name: simple-web-app
+    app.kubernetes.io/name: web-app
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -29,7 +29,7 @@ metadata:
   annotations:
     argocd.argoproj.io/tracking-id: development:apps/Deployment:development/web-app
   labels:
-    app.kubernetes.io/name: simple-web-app
+    app.kubernetes.io/name: web-app
   name: web-app
   namespace: development
 spec:
@@ -37,12 +37,12 @@ spec:
   selector:
     matchLabels:
       app: web-app
-      app.kubernetes.io/name: simple-web-app
+      app.kubernetes.io/name: web-app
   template:
     metadata:
       labels:
         app: web-app
-        app.kubernetes.io/name: simple-web-app
+        app.kubernetes.io/name: web-app
     spec:
       containers:
         - image: nginx:stable
@@ -64,7 +64,7 @@ metadata:
     argocd.argoproj.io/tracking-id: development:networking.k8s.io/Ingress:development/web-app-ingress
     nginx.ingress.kubernetes.io/rewrite-target: /
   labels:
-    app.kubernetes.io/name: simple-web-app
+    app.kubernetes.io/name: web-app
   name: web-app-ingress
   namespace: development
 spec:
