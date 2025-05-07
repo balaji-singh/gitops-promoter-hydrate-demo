@@ -1,14 +1,23 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 resources:
-  - nginx-deployment.yaml
-  - nginx-service.yaml
-  - nginx.yaml
+  - https://github.com/argoproj/rollouts-demo//examples/canary
 
 patches:
   - path: remove-ingress-demo.yaml
   - path: remove-ingress-demo-preview.yaml
   - path: rollout-steps.yaml
+
+images:
+- name: argoproj/rollouts-demo:blue
+  newTag: yellow
+
+commonAnnotations:
+    version: "v1.0.137"
+
+openapi:
+  path: https://raw.githubusercontent.com/argoproj/argo-schema-generator/main/schema/argo_all_k8s_kustomize_schema.json
 
 configurations:
   - transform.yaml
